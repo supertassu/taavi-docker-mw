@@ -25,6 +25,6 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: supertassu/taavi-mw:latest
+          tags: ghcr.io/supertassu/taavi-mw:latest
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
