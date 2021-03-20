@@ -9,7 +9,7 @@ RUN tar -xzf /tmp/pluggableauth.tar.gz -C /tmp
 RUN curl -sL https://extdist.wmflabs.org/dist/extensions/OpenIDConnect-REL1_35-05d76c0.tar.gz -o /tmp/openidconnect.tar.gz
 RUN tar -xzf /tmp/openidconnect.tar.gz -C /tmp
 
-RUN curl -sL https://extdist.wmflabs.org/dist/skins/Cosmos-REL1_35-0418032.tar.gz -o /tmp/cosmos.tar.gz
+RUN curl -sL https://extdist.wmflabs.org/dist/skins/Cosmos-master-55fd166.tar.gz -o /tmp/cosmos.tar.gz
 RUN tar -xzf /tmp/cosmos.tar.gz -C /tmp
 
 FROM mediawiki:1.35.1
