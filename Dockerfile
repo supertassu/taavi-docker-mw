@@ -3,10 +3,10 @@ FROM mediawiki:1.35.1 as builder
 RUN curl -sL https://extdist.wmflabs.org/dist/extensions/OAuth-REL1_35-35d6745.tar.gz -o /tmp/oauth.tar.gz
 RUN tar -xzf /tmp/oauth.tar.gz -C /tmp
 
-RUN curl -sL https://extdist.wmflabs.org/dist/extensions/PluggableAuth-master-2a465ae.tar.gz -o /tmp/pluggableauth.tar.gz
+RUN curl -sL https://extdist.wmflabs.org/dist/extensions/PluggableAuth-REL1_35-2a465ae.tar.gz -o /tmp/pluggableauth.tar.gz
 RUN tar -xzf /tmp/pluggableauth.tar.gz -C /tmp
 
-RUN curl -sL https://extdist.wmflabs.org/dist/extensions/OpenIDConnect-master-05d76c0.tar.gz -o /tmp/openidconnect.tar.gz
+RUN curl -sL https://extdist.wmflabs.org/dist/extensions/OpenIDConnect-REL1_35-05d76c0.tar.gz -o /tmp/openidconnect.tar.gz
 RUN tar -xzf /tmp/openidconnect.tar.gz -C /tmp
 
 RUN curl -sL https://extdist.wmflabs.org/dist/skins/Cosmos-REL1_35-0418032.tar.gz -o /tmp/cosmos.tar.gz
