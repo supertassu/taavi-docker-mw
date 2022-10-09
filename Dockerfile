@@ -20,7 +20,7 @@ COPY apt/taavi.asc /etc/apt/trusted.gpg.d/taavi.asc
 COPY apt/sources.list /etc/apt/sources.list.d/taavi.list
 
 RUN apt-get clean && apt-get update
-RUN DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends --yes apache2 mediawiki mediawiki-extension-codemirror php-mysql php-redis php-apcu php-curl php-gmp imagemagick php-yaml php-wikidiff2 python3-pygments php-luasandbox
+RUN DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends --yes apache2 mediawiki mediawiki-extension-codemirror php-mysql php-memcached php-apcu php-curl php-gmp imagemagick php-yaml php-wikidiff2 python3-pygments php-luasandbox
 
 RUN a2enmod rewrite
 RUN rm /etc/apache2/conf-enabled/mediawiki.conf
