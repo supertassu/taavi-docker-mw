@@ -27,6 +27,8 @@ RUN rm /etc/apache2/conf-enabled/mediawiki.conf
 RUN rm /etc/apache2/sites-enabled/000-default.conf
 COPY site.conf /etc/apache2/sites-enabled/mediawiki.conf
 
+COPY jobrunner.sh /usr/local/bin/mw-jobrunner
+
 COPY --from=builder /var/lib/mediawiki/extensions/OAuth /var/lib/mediawiki/extensions/OAuth
 COPY --from=builder /var/lib/mediawiki/extensions/TemplateStyles /var/lib/mediawiki/extensions/TemplateStyles
 COPY --from=builder /var/lib/mediawiki/extensions/PluggableAuth /var/lib/mediawiki/extensions/PluggableAuth
