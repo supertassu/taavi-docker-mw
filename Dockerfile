@@ -1,28 +1,36 @@
-FROM mediawiki:1.35.5 as builder
+FROM debian:bullseye as builder
 
-RUN curl -sL https://extdist.wmflabs.org/dist/extensions/OAuth-REL1_35-4371760.tar.gz -o /tmp/oauth.tar.gz
-RUN tar -xzf /tmp/oauth.tar.gz -C /tmp
+RUN apt-get clean && apt-get update
+RUN DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends --yes git composer php-curl unzip mediawiki
 
-RUN curl -sL https://extdist.wmflabs.org/dist/extensions/TemplateStyles-REL1_35-3176f0c.tar.gz -o /tmp/templatestyles.tar.gz
-RUN tar -xzf /tmp/templatestyles.tar.gz -C /tmp
+RUN mkdir -pv /var/lib/mediawiki/extensions
+COPY download-extension.sh /usr/local/bin/download-extension
 
-RUN curl -sL https://extdist.wmflabs.org/dist/extensions/CodeMirror-REL1_35-ac7ae68.tar.gz -o /tmp/codemirror.tar.gz
-RUN tar -xzf /tmp/codemirror.tar.gz -C /tmp
+RUN download-extension OAuth
+RUN download-extension TemplateStyles
+RUN download-extension PluggableAuth
+RUN download-extension OpenIDConnect
 
-RUN curl -sL https://extdist.wmflabs.org/dist/extensions/PluggableAuth-REL1_35-efff551.tar.gz -o /tmp/pluggableauth.tar.gz
-RUN tar -xzf /tmp/pluggableauth.tar.gz -C /tmp
+FROM debian:bullseye
 
-RUN curl -sL https://extdist.wmflabs.org/dist/extensions/OpenIDConnect-REL1_37-18cc623.tar.gz -o /tmp/openidconnect.tar.gz
-RUN tar -xzf /tmp/openidconnect.tar.gz -C /tmp
+RUN apt-get clean && apt-get update
+RUN apt-get install --no-install-recommends --yes ca-certificates
 
-RUN curl -sL https://extdist.wmflabs.org/dist/skins/Cosmos-master-2c46a3c.tar.gz -o /tmp/cosmos.tar.gz
-RUN tar -xzf /tmp/cosmos.tar.gz -C /tmp
+COPY apt/taavi.asc /etc/apt/trusted.gpg.d/taavi.asc
+COPY apt/sources.list /etc/apt/sources.list.d/taavi.list
 
-FROM mediawiki:1.35.5
+RUN apt-get clean && apt-get update
+RUN DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends --yes apache2 mediawiki mediawiki-extension-codemirror php-mysql php-redis php-apcu php-curl php-gmp imagemagick php-yaml php-wikidiff2 python3-pygments php-luasandbox
 
-COPY --from=builder /tmp/OAuth /var/www/html/extensions/OAuth
-COPY --from=builder /tmp/PluggableAuth /var/www/html/extensions/PluggableAuth
-COPY --from=builder /tmp/OpenIDConnect /var/www/html/extensions/OpenIDConnect
-COPY --from=builder /tmp/TemplateStyles /var/www/html/extensions/TemplateStyles
-COPY --from=builder /tmp/CodeMirror /var/www/html/extensions/CodeMirror
-COPY --from=builder /tmp/Cosmos /var/www/html/skins/Cosmos
+RUN a2enmod rewrite
+RUN rm /etc/apache2/conf-enabled/mediawiki.conf
+RUN rm /etc/apache2/sites-enabled/000-default.conf
+COPY site.conf /etc/apache2/sites-enabled/mediawiki.conf
+
+COPY --from=builder /var/lib/mediawiki/extensions/OAuth /var/lib/mediawiki/extensions/OAuth
+COPY --from=builder /var/lib/mediawiki/extensions/TemplateStyles /var/lib/mediawiki/extensions/TemplateStyles
+COPY --from=builder /var/lib/mediawiki/extensions/PluggableAuth /var/lib/mediawiki/extensions/PluggableAuth
+COPY --from=builder /var/lib/mediawiki/extensions/OpenIDConnect /var/lib/mediawiki/extensions/OpenIDConnect
+
+EXPOSE 80
+CMD [ "apache2ctl", "-DFOREGROUND" ]

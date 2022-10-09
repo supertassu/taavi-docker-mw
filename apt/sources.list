@@ -1,0 +1,1 @@
+deb [signed-by=/etc/apt/trusted.gpg.d/taavi.asc] https://apt.taavi.wtf bullseye component/mediawiki
